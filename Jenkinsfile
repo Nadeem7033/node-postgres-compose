@@ -2,19 +2,27 @@ pipeline {
   agent any
 
   stages {
-    stage('Clone Repo') {
+
+    stage('Checkout Code') {
       steps {
-        git 'https://github.com/your-username/node-postgres-compose.git'
+        git branch: 'main',
+            url: 'https://github.com/<your-username>/node-postgres-compose.git'
       }
     }
 
-    stage('Build Docker Image') {
+    stage('Stop Old Containers') {
+      steps {
+        sh 'docker compose down || true'
+      }
+    }
+
+    stage('Build Images') {
       steps {
         sh 'docker compose build'
       }
     }
 
-    stage('Run Containers') {
+    stage('Deploy Containers') {
       steps {
         sh 'docker compose up -d'
       }
